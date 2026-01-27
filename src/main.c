@@ -186,12 +186,10 @@ int main(int argc, char **argv) {
 
     uint64_t total_prod_now = 0, total_cons_now = 0;
     uint64_t blocked_full_now = 0, blocked_empty_now = 0;
-    int occ_now = 0, high_now = 0, low_now = 0;
+    int occ_now = 0;
 
     pthread_mutex_lock(&q.lock);
     occ_now = pq_count(&q);
-    high_now = q.high_count;
-    low_now = q.low_count;
 
     for (int i = 0; i < (int)p; i++) {
       total_prod_now += pstats[i].produced;
@@ -203,11 +201,11 @@ int main(int argc, char **argv) {
     }
     pthread_mutex_unlock(&q.lock);
 
-    printf("STATUS t=%ds produced=%llu consumed=%llu occ=%d high=%d low=%d blk_full=%llu blk_empty=%llu\n",
+    printf("STATUS t=%ds produced=%llu consumed=%llu occ=%d blk_full=%llu blk_empty=%llu\n",
            elapsed + 1,
            (unsigned long long)total_prod_now,
            (unsigned long long)total_cons_now,
-           occ_now, high_now, low_now,
+           occ_now,
            (unsigned long long)blocked_full_now,
            (unsigned long long)blocked_empty_now);
     fflush(stdout);
@@ -246,8 +244,7 @@ int main(int argc, char **argv) {
     printf("Average latency: n/a\n");
   }
 
-  printf("Final queue occupancy: %d (high=%d low=%d)\n",
-         pq_count(&q), q.high_count, q.low_count);
+  printf("Final queue occupancy: %d\n", pq_count(&q));
 
   hist_print((int)cap);
 

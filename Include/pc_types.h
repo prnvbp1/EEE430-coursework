@@ -54,13 +54,11 @@ typedef struct {
 } item_t;
 
 typedef struct {
-  /* Two FIFOs share one global capacity */
-  item_t *high;
-  item_t *low;
+  /* Single ring buffer (FIFO) */
+  item_t *buf;
   int cap;
 
-  int high_head, high_tail, high_count;
-  int low_head,  low_tail,  low_count;
+  int head, tail, count;
 
   pthread_mutex_t lock;
   pthread_cond_t not_full;
